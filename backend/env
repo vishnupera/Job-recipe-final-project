@@ -1,0 +1,21 @@
+# Backend Environment Variables - ReadySetJob API
+
+# PostgreSQL Railway Database
+# Public URL (for local development outside Railway)
+DATABASE_URL=postgresql://postgres:dKicnZwveKVdMTVUAJfnhJCCcilefJsN@hayabusa.proxy.rlwy.net:50081/railway
+
+# Internal URL (used when deployed inside Railway)
+INTERNAL_DATABASE_URL=postgresql://postgres:dKicnZwveKVdMTVUAJfnhJCCcilefJsN@postgres.railway.internal:5432/railway
+
+# Server
+PORT=5000
+NODE_ENV=development
+
+# JWT Auth Secret (change in production)
+JWT_SECRET=rsj_super_secret_jwt_key_2026_change_in_prod
+
+# CORS Allowed Origins
+CORS_ORIGIN=http://localhost:5173
+
+# Redis (Railway)   execution result caching + distributed locking
+REDIS_URL=redis://default:qeTZunBQpbbGqpqXmnFZoKLNzzqnNCdo@altaria.proxy.rlwy.net:36609
