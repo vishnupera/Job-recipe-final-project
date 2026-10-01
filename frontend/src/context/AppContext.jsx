@@ -471,21 +471,6 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('rsj_assessments', JSON.stringify(assessments));
   }, [assessments]);
 
-  // Sync assessments from backend API on mount
-  useEffect(() => {
-    const fetchAssessments = async () => {
-      try {
-        const res = await api.assessments.getAll();
-        if (res.ok && Array.isArray(res.data?.data)) {
-          const cleanAssessments = res.data.data.filter(a => !DUMMY_ASM_IDS.includes(a.id));
-          setAssessments(cleanAssessments);
-        }
-      } catch (err) {
-        console.warn('Backend assessments sync warning:', err.message);
-      }
-    };
-    fetchAssessments();
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('rsj_question_bank', JSON.stringify(questionBank));
@@ -1524,36 +1509,39 @@ export const AppProvider = ({ children }) => {
   // Fetch assessments from PostgreSQL database on load and merge with local state
   useEffect(() => {
     const fetchAssessments = async () => {
-      const res = await api.assessments.getAll();
-      if (res.ok && res.data?.data) {
-        const dbList = res.data.data.map(a => ({
-          id: a.id,
-          title: a.title,
-          category: a.category,
-          description: a.description,
-          difficulty: a.difficulty,
-          durationMinutes: Number(a.duration_minutes) || 30,
-          totalQuestions: (Array.isArray(a.selected_question_ids) && a.selected_question_ids.length > 0)
-            ? a.selected_question_ids.length
-            : (Number(a.total_questions) || 5),
-          passingScore: Number(a.passing_score) || 65,
-          status: a.status || 'Available',
-          progress: 0,
-          completedQuestions: 0,
-          lastScore: null,
-          selectedQuestionIds: a.selected_question_ids || []
-        }));
+      try {
+        const res = await api.assessments.getAll();
+        const rawList = Array.isArray(res?.data?.data)
+          ? res.data.data
+          : (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        if (res.ok && rawList.length > 0) {
+          const dbList = rawList
+            .filter(a => !DUMMY_ASM_IDS.includes(a.id))
+            .map(a => ({
+              id: a.id,
+              title: a.title,
+              category: a.category,
+              description: a.description || '',
+              difficulty: a.difficulty || 'Medium',
+              durationMinutes: Number(a.duration_minutes ?? a.durationMinutes) || 30,
+              totalQuestions: (Array.isArray(a.selected_question_ids) && a.selected_question_ids.length > 0)
+                ? a.selected_question_ids.length
+                : ((Array.isArray(a.selectedQuestionIds) && a.selectedQuestionIds.length > 0) ? a.selectedQuestionIds.length : (Number(a.total_questions ?? a.totalQuestions) || 5)),
+              passingScore: Number(a.passing_score ?? a.passingScore) || 65,
+              status: a.status || 'Available',
+              progress: 0,
+              completedQuestions: 0,
+              lastScore: null,
+              selectedQuestionIds: a.selected_question_ids || a.selectedQuestionIds || []
+            }));
 
-        setAssessments(prev => {
-          const map = new Map();
-          dbList.forEach(item => map.set(item.id, item));
-          prev.forEach(item => {
-            if (!map.has(item.id)) map.set(item.id, item);
-          });
-          const merged = Array.from(map.values());
-          localStorage.setItem('rsj_assessments', JSON.stringify(merged));
-          return merged;
-        });
+          setAssessments(dbList);
+          try {
+            localStorage.setItem('rsj_assessments', JSON.stringify(dbList));
+          } catch (e) {}
+        }
+      } catch (err) {
+        console.warn('Backend assessments sync warning:', err.message);
       }
     };
 

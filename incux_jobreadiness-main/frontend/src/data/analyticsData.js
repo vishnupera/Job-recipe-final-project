@@ -24,6 +24,14 @@ export const mockStudent = {
   percentile: 88,
   rank: 35,
   totalStudents: 280,
+  categoryScores: {
+    aptitude: 82,
+    reasoning: 74,
+    technical: 78,
+    verbal: 72,
+    english: 72,
+    coding: 75,
+  },
   examAttempts: [
     {
       id: 'ATT-001',

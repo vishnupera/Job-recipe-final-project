@@ -156,13 +156,11 @@ export const Header = ({ onToggleSidebar }) => {
                   <span className="font-bold text-lg text-slate-900 tracking-tight leading-none">
                     ReadySet<span className="text-brand-600">Job</span>
                   </span>
-                  <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded tracking-wider uppercase border ${
-                    role === 'admin'
-                      ? 'bg-slate-900 text-brand-300 border-slate-700'
-                      : 'bg-brand-50 text-brand-700 border border-brand-200'
-                  }`}>
-                    {role === 'admin' ? 'Admin Portal' : 'Student Portal'}
-                  </span>
+                  {role === 'admin' && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded tracking-wider uppercase border bg-slate-900 text-brand-300 border-slate-700">
+                      Admin Portal
+                    </span>
+                  )}
                 </div>
                 <span className="text-[10px] text-slate-500 font-medium hidden sm:block">
                   {role === 'admin' ? 'Recruiter & University Management' : 'AI-Powered Assessment & Readiness'}

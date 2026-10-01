@@ -433,6 +433,18 @@ export const initSchema = async () => {
       `, c);
     }
     console.log('✅ Company eligibility criteria synchronized successfully.');
+
+    // 8. Auto-seed core assessments & questions if assessments are missing
+    const asmCountRes = await client.query('SELECT COUNT(*) FROM assessments');
+    if (parseInt(asmCountRes.rows[0].count, 10) === 0) {
+      console.log('🌱 No assessments found in DB. Auto-seeding core assessments & questions...');
+      try {
+        const { seedAssessmentsAndQuestions } = await import('../../scripts/seed_assessments_questions.js');
+        await seedAssessmentsAndQuestions(client);
+      } catch (seedErr) {
+        console.warn('⚠️ Auto-seeding assessments warning:', seedErr.message);
+      }
+    }
   } catch (err) {
     console.error('❌ Schema initialization error:', err.message);
     throw err;

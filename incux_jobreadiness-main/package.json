@@ -13,8 +13,8 @@
     "dev": "start /B npm run dev:backend && npm run dev:frontend",
     "install:all": "cd backend && npm install --legacy-peer-deps && cd ../frontend && npm install --legacy-peer-deps",
     "seed": "cd backend && npm run seed",
-    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
-    "start": "serve -s frontend/dist"
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install --legacy-peer-deps",
+    "start": "node backend/src/index.js"
   },
   "dependencies": {
     "serve": "^14.2.4"

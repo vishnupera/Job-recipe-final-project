@@ -14,12 +14,14 @@ import { requireRole } from '../middleware/rbac.js';
 
 const router = Router();
 
-// All assessment endpoints require authentication
-router.use(authenticateToken);
-
-// Candidate & Admin can view assessments
+// Public assessment catalog metadata (candidate & admin can browse available assessments)
 router.get('/', getAllAssessments);
 router.get('/:id', getAssessmentById);
+
+// All protected endpoints below require authentication
+router.use(authenticateToken);
+
+// Candidate & Admin can fetch questions during assessment session
 router.get('/:id/questions', getAssessmentQuestions);
 
 // Admin-only management endpoints

@@ -24,6 +24,14 @@ export const mockStudent = {
   percentile: 88,
   rank: 35,
   totalStudents: 280,
+  categoryScores: {
+    aptitude: 82,
+    reasoning: 74,
+    technical: 78,
+    verbal: 72,
+    english: 72,
+    coding: 75,
+  },
   examAttempts: [
     {
       id: 'ATT-001',
@@ -604,7 +612,10 @@ export function computeEligibility(student, criteriaList = standardCompanyEligib
   const candBacklogs = Number(student?.backlogs ?? 0);
 
   // Extract candidate section & overall exam scores
-  const catPercents = getCategoryPercents(student?.examAttempts?.[student.examAttempts.length - 1]);
+  const lastAttempt = Array.isArray(student?.examAttempts) && student.examAttempts.length > 0
+    ? student.examAttempts[student.examAttempts.length - 1]
+    : null;
+  const catPercents = getCategoryPercents(lastAttempt);
   const candApt = Math.max(Number(student?.categoryScores?.aptitude || 0), Number(student?.categoryScores?.Aptitude || 0), Number(student?.aptitudeScore || 0), Number(student?.aptitude_score || 0), Number(catPercents.aptitude || 0));
   const candReason = Math.max(Number(student?.categoryScores?.reasoning || 0), Number(student?.categoryScores?.Reasoning || 0), Number(student?.reasoningScore || 0), Number(student?.reasoning_score || 0), Number(catPercents.reasoning || 0));
   const candTech = Math.max(Number(student?.categoryScores?.technical || 0), Number(student?.categoryScores?.Technical || 0), Number(student?.technicalScore || 0), Number(student?.technical_score || 0), Number(catPercents.technical || 0));
@@ -846,21 +857,21 @@ export function getCategoryPercents(attempt) {
     if (cat && typeof cat.score === 'number' && cat.score > 0) {
       return Math.min(100, Math.max(0, Math.round(cat.score)));
     }
-    if (attempt.categoryScores && attempt.categoryScores[key] !== undefined) {
+    if (attempt?.categoryScores && attempt.categoryScores[key] !== undefined) {
       return Math.min(100, Math.max(0, Math.round(Number(attempt.categoryScores[key]))));
     }
     return 0;
   };
 
-  const engCat = attempt.categories.verbal || attempt.categories.english;
+  const engCat = attempt.categories?.verbal || attempt.categories?.english;
   const engPct = calcPct(engCat, 'verbal') || calcPct(engCat, 'english');
-  const codingCat = attempt.categories.coding;
+  const codingCat = attempt.categories?.coding;
   const codingPct = calcPct(codingCat, 'coding');
 
   return {
-    aptitude: calcPct(attempt.categories.aptitude, 'aptitude'),
-    reasoning: calcPct(attempt.categories.reasoning, 'reasoning'),
-    technical: calcPct(attempt.categories.technical, 'technical'),
+    aptitude: calcPct(attempt.categories?.aptitude, 'aptitude'),
+    reasoning: calcPct(attempt.categories?.reasoning, 'reasoning'),
+    technical: calcPct(attempt.categories?.technical, 'technical'),
     english: engPct,
     verbal: engPct,
     coding: codingPct,

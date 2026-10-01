@@ -249,11 +249,11 @@ export default function CandidateAnalyticsPage() {
     const rank = Math.max(1, Math.round(totalStudents * (1 - percentile / 100)));
 
     const categoryScores = aggregatedData?.compositeCategoryScores ?? {
-      aptitude: Number(currentUser?.aptitudeScore ?? currentUser?.aptitude_score ?? defaultData.categoryScores.aptitude),
-      reasoning: Number(currentUser?.reasoningScore ?? currentUser?.reasoning_score ?? defaultData.categoryScores.reasoning),
-      technical: Number(currentUser?.technicalScore ?? currentUser?.technical_score ?? defaultData.categoryScores.technical),
-      verbal: Number(currentUser?.verbalScore ?? currentUser?.verbal_score ?? defaultData.categoryScores.verbal),
-      coding: Number(currentUser?.codingScore ?? currentUser?.coding_score ?? defaultData.categoryScores.coding),
+      aptitude: Number(currentUser?.aptitudeScore ?? currentUser?.aptitude_score ?? defaultData.categoryScores?.aptitude ?? 82),
+      reasoning: Number(currentUser?.reasoningScore ?? currentUser?.reasoning_score ?? defaultData.categoryScores?.reasoning ?? 74),
+      technical: Number(currentUser?.technicalScore ?? currentUser?.technical_score ?? defaultData.categoryScores?.technical ?? 78),
+      verbal: Number(currentUser?.verbalScore ?? currentUser?.verbal_score ?? defaultData.categoryScores?.verbal ?? 72),
+      coding: Number(currentUser?.codingScore ?? currentUser?.coding_score ?? defaultData.categoryScores?.coding ?? 75),
     };
 
     const sectionsTested = aggregatedData?.compositeSectionsTested ?? {
