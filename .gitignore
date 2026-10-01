@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 frontend/node_modules/
 backend/node_modules/
@@ -10,8 +10,10 @@ build/
 
 # Environment files (never commit secrets)
 .env
-.env.local
-.env.production
+.env.*
+*.env
+env
+backend/env
 frontend/.env
 backend/.env
 
