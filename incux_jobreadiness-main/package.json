@@ -14,6 +14,9 @@
     "install:all": "cd backend && npm install --legacy-peer-deps && cd ../frontend && npm install --legacy-peer-deps",
     "seed": "cd backend && npm run seed",
     "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
-    "start": "node backend/src/index.js"
+    "start": "serve -s frontend/dist"
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
   }
 }
